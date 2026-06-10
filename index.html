@@ -5,75 +5,230 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Gold Calculator Pro</title>
+<title>⭐ Gold Calculator Pro - Mukesh Kumar V.5⭐</title>
 
+<!-- ✅ PWA -->
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#007bff">
 
 <style>
-body{font-family:Arial;background:#f5f5f5;padding:10px;}
-.card{background:#fff;padding:12px;margin-bottom:10px;border-radius:8px;}
-input{width:100%;padding:12px;font-size:16px;margin:8px 0;border-radius:6px;border:1px solid #ccc;}
-.result{display:flex;justify-content:space-between;margin:6px 0;}
-.highlight{background:yellow;padding:5px;font-weight:bold;}
-button{width:32%;padding:12px;background:#007bff;color:#fff;border:none;border-radius:6px;}
+body {
+    font-family: Trebuchet MS;
+    background: #f5f5f5;
+    padding: 10px;
+}
+
+h2 {
+    text-align: center;
+}
+
+.card {
+    background: white;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+}
+
+label {
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.result {
+    display: flex;
+    justify-content: space-between;
+    margin: 6px 0;
+}
+
+.highlight {
+    background: yellow;
+    padding: 5px;
+    font-weight: bold;
+}
+
+button {
+    width: 32%;
+    padding: 12px;
+    font-size: 16px;
+    margin-top: 10px;
+    border: none;
+    background: #007bff;
+    color: white;
+    border-radius: 6px;
+}
+
+button:active {
+    background: #0056b3;
+}
 </style>
 
 </head>
 
 <body>
 
-<h2>Gold Calculator</h2>
+<h2>⭐ Gold Calculator Pro - Mukesh Kumar V.5⭐</h2>
 
 <div class="card">
-<label>Gold Rate</label>
-<input id="rate">
+<p><b>Date:</b> <span id="date"></span></p>
+
+<label>Gold Rate (22k / gm)</label>
+<input id="rate" inputmode="decimal" placeholder="Enter today rate">
 
 <label>Making %</label>
-<input id="making">
+<input id="making" inputmode="decimal" placeholder="Enter %">
 
-<label>Weight</label>
-<input id="weight">
+<label>Gold Weight (gm)</label>
+<input id="weight" inputmode="decimal" placeholder="Enter weight" >
 </div>
 
 <div class="card">
-<div class="highlight">Result</div>
-<div class="result"><span>Total</span><span id="total">₹ 0.00</span></div>
-<div class="result"><span>GST</span><span id="gst">₹ 0.00</span></div>
-<div class="result"><span>Final</span><span id="final">₹ 0.00</span></div>
+<div class="highlight">Calculation</div>
+
+<div class="result"><span>Total Gold Price</span><span id="goldPrice">₹ 0.00</span></div>
+<div class="result"><span>Making Charge</span><span id="makingCharge">₹ 0.00</span></div>
+<div class="result"><span>GST (3%)</span><span id="gst">₹ 0.00</span></div>
+<div class="result"><span>Hallmark</span><span>₹ 53.00</span></div>
+
+<div class="result"><b>Total Gold Cost</b><b id="total">₹ 0.00</b></div>
+</div>
+
+<div class="card">
+<div class="highlight">Credit Card</div>
+
+<div class="result"><span>2% Charge</span><span id="ccExtra">₹ 0.00</span></div>
+<div class="result"><b>Final Card Amount</b><b id="ccTotal">₹ 0.00</b></div>
+</div>
+
+<div class="card">
+<div class="highlight">Old Gold Exchange</div>
+
+<label>Old Gold Weight (gm)</label>
+<input id="oldWeight" inputmode="decimal">
+
+<div class="result"><span>Old Gold Value</span><span id="oldValue">₹ 0.00</span></div>
+
+<div class="result"><b>Final Payable</b><b id="finalPay">₹ 0.00</b></div>
+</div>
+
+<div class="card">
+<button onclick="resetAll()">Reset</button>
+<button onclick="saveData()">Save</button>
+<button onclick="calculate()">Calc</button>
 </div>
 
 <script>
 
-// REGISTER SERVICE WORKER
+// ✅ REGISTER PWA (offline support)
 if ('serviceWorker' in navigator) {
- navigator.serviceWorker.register('sw.js');
+    navigator.serviceWorker.register('sw.js');
 }
 
-// CALC
-function calc(){
-let r=+rate.value||0;
-let m=+making.value||0;
-let w=+weight.value||0;
+// ✅ DATE
+document.getElementById("date").innerText =
+new Date().toLocaleDateString('en-IN');
 
-let gold=r*w;
-let mk=gold*m/100;
-let gst=(gold+mk)*0.03;
-let total=gold+mk+gst+53;
-
-totalEl.innerText="₹ "+total.toLocaleString('en-IN');
-gstEl.innerText="₹ "+gst.toLocaleString('en-IN');
-finalEl.innerText="₹ "+total.toLocaleString('en-IN');
+// ✅ FORMAT
+function f(num){
+return "₹ " + num.toLocaleString('en-IN',{
+minimumFractionDigits:2
+});
 }
 
-const totalEl=document.getElementById("total");
-const gstEl=document.getElementById("gst");
-const finalEl=document.getElementById("final");
+// ✅ ELEMENTS
+const rate = document.getElementById("rate");
+const making = document.getElementById("making");
+const weight = document.getElementById("weight");
+const oldWeight = document.getElementById("oldWeight");
 
-[rate,making,weight].forEach(el=>el.addEventListener("input",calc));
+const goldPrice = document.getElementById("goldPrice");
+const makingCharge = document.getElementById("makingCharge");
+const gstEl = document.getElementById("gst");
+const totalEl = document.getElementById("total");
+const ccExtra = document.getElementById("ccExtra");
+const ccTotal = document.getElementById("ccTotal");
+const oldValue = document.getElementById("oldValue");
+const finalPay = document.getElementById("finalPay");
+
+// ✅ CALCULATE
+function calculate(){
+
+let r = parseFloat(rate.value)||0;
+let m = parseFloat(making.value)||0;
+let w = parseFloat(weight.value)||0;
+let o = parseFloat(oldWeight.value)||0;
+
+let gold = r * w;
+let mk = gold * m / 100;
+let gst = (gold + mk) * 0.03;
+
+let total = gold + mk + gst + 53;
+
+let cc = total * 0.02;
+let ccFinal = total + cc;
+
+let oldVal = r * o;
+
+let final = total - oldVal;
+if(final < 0) final = 0;
+
+// DISPLAY
+goldPrice.innerText = f(gold);
+makingCharge.innerText = f(mk);
+gstEl.innerText = f(gst);
+totalEl.innerText = f(total);
+ccExtra.innerText = f(cc);
+ccTotal.innerText = f(ccFinal);
+oldValue.innerText = f(oldVal);
+finalPay.innerText = f(final);
+
+}
+
+// ✅ AUTO CALC (iOS FIX)
+[rate, making, weight, oldWeight].forEach(el=>{
+el.addEventListener("input", calculate);
+});
+
+// ✅ RESET
+function resetAll(){
+document.querySelectorAll("input").forEach(i=>i.value="");
+calculate();
+localStorage.clear();
+}
+
+// ✅ SAVE
+function saveData(){
+localStorage.setItem("goldData", JSON.stringify({
+r: rate.value,
+m: making.value,
+w: weight.value,
+o: oldWeight.value
+}));
+alert("Saved ✅");
+}
+
+// ✅ LOAD
+window.onload = ()=>{
+let d = JSON.parse(localStorage.getItem("goldData"));
+if(d){
+rate.value=d.r;
+making.value=d.m;
+weight.value=d.w;
+oldWeight.value=d.o;
+calculate();
+}
+};
 
 </script>
 
 </body>
 </html>
-``
+Thank you! The design has been created for Ambernath gold purchases to provide better clarity on the rates. — Mukesh (Prem Academy)

@@ -1,4 +1,4 @@
-const cacheName = "gold-app-v1";
+const cacheName = "gold-app-v2";
 
 self.addEventListener("install", e => {
  e.waitUntil(
