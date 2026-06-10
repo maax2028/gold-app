@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Gold Calculator Pro</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#007bff">
+
+<style>
+body{font-family:Arial;background:#f5f5f5;padding:10px;}
+.card{background:#fff;padding:12px;margin-bottom:10px;border-radius:8px;}
+input{width:100%;padding:12px;font-size:16px;margin:8px 0;border-radius:6px;border:1px solid #ccc;}
+.result{display:flex;justify-content:space-between;margin:6px 0;}
+.highlight{background:yellow;padding:5px;font-weight:bold;}
+button{width:32%;padding:12px;background:#007bff;color:#fff;border:none;border-radius:6px;}
+</style>
+
+</head>
+
+<body>
+
+<h2>Gold Calculator</h2>
+
+<div class="card">
+<label>Gold Rate</label>
+<input id="rate">
+
+<label>Making %</label>
+<input id="making">
+
+<label>Weight</label>
+<input id="weight">
+</div>
+
+<div class="card">
+<div class="highlight">Result</div>
+<div class="result"><span>Total</span><span id="total">₹ 0.00</span></div>
+<div class="result"><span>GST</span><span id="gst">₹ 0.00</span></div>
+<div class="result"><span>Final</span><span id="final">₹ 0.00</span></div>
+</div>
+
+<script>
+
+// REGISTER SERVICE WORKER
+if ('serviceWorker' in navigator) {
+ navigator.serviceWorker.register('sw.js');
+}
+
+// CALC
+function calc(){
+let r=+rate.value||0;
+let m=+making.value||0;
+let w=+weight.value||0;
+
+let gold=r*w;
+let mk=gold*m/100;
+let gst=(gold+mk)*0.03;
+let total=gold+mk+gst+53;
+
+totalEl.innerText="₹ "+total.toLocaleString('en-IN');
+gstEl.innerText="₹ "+gst.toLocaleString('en-IN');
+finalEl.innerText="₹ "+total.toLocaleString('en-IN');
+}
+
+const totalEl=document.getElementById("total");
+const gstEl=document.getElementById("gst");
+const finalEl=document.getElementById("final");
+
+[rate,making,weight].forEach(el=>el.addEventListener("input",calc));
+
+</script>
+
+</body>
+</html>
+``
